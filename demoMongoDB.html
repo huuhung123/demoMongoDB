@@ -1,10 +1,10 @@
 <!-- 
-NOSQL(dongodb.com/doc/server,MongoDB, RavenDB, Redis, Neo4j,)
-  - NoSQL là Not Only SQL
+NOSQL(dongodb.com/doc/server,MongoDB, RavenDB, Redis, Neo4j,) mongodbtutorialspoint
+  - NoSQL là Not Only SQL (Non relational)
   - Không sử dụng mô hình dữ liệu quan hệ (RDBMs)
   - Mô hình lưu trữ {"key" : "value"}
   - Hệ thống lưu trữ phân tán, NoSQL là hệ cơ sở dữ liệu không ràng buộc, phân tán, mã nguồn mở, khả năng mở rộng theo chiều ngang, độ chịu tải và chịu lỗi cao, yêu cầu về tài nguyên phần cứng thấp.
-  - High scalability, vertical scalable(mở rộng theo chiều dọc - nâng cấp server), horizontal scalable(mở rộng theo chiều ngang - thêm server)
+  - High scalability, vertical scalable(mở rộng theo chiều dọc - nâng cấp server(SQL), scale up), horizontal scalable(mở rộng theo chiều ngang - thêm server, scale out)
 
 RELATIONAL                NON - RELATIONAL
 table                       collection
@@ -30,7 +30,7 @@ NoSQL Database (Phải là NoSQL Database nhé) ra đời, giải quyết đư�
 
 PL    +   FRAMEWORK   +   DATABASE
 LAMP:  Linux Apache, MySQL(SQL), PHP/Python
-MEAN: MongoDB(NoSQL), Express, Angular, NodeJS
+MERN: MongoDB(NoSQL), Express, React, NodeJS
 Microsoft: .NET, IIS and SQL Server
 Java: Java, Apache and Oracle
 
@@ -53,314 +53,52 @@ MongoDB stores documents in collections. Collections are analogous to tables in 
 
 Key Features: High Performance, Rich Query Language, High Availability, Horizontal Scalability, Support for Multiple Storage Engines
 -->
- 
-//DEMOSQL
-<!-- 
-  - DATABASE is a collection of data stored in a format that can easily be accessed. In order to manage our databases, we use a software application called database management system (DBMS)
-  - DBMS: RDBMS(SQL, MySQL, SQL Server, Oracle)  NoSQL (non- relational) don't understand SQL
-                    <-----------
-             CLIENT ----------- DBMS --------- DATABASE
--->
-
-<!--
-SQL CREATE DATABASE Statement is used to create a new SQL database.     
-CREATE DATABASE databasename;   ex: CREATE DATABASE tutorial;
-
-SQL DROP DATABASE Statement is used to drop an existing SQL database.  
-DROP DATABASE databasename;     ex:  DROP DATABASE tutorial;
--->
 
 <!-- 
-SQL CREATE TABLE Statement is used to create a new table in a database.
-
-CREATE TABLE table_name (             CREATE TABLE tutorial.persons (
-    column1 datatype,                      PersonID int,
-    column2 datatype,                      LastName varchar(255),
-    column3 datatype,                      FirstName varchar(255),
-   ....                                    Address varchar(255)
-);                                    );
-
-CREATE TABLE USING ANOTHER TABLE:
-  - A copy of an existing table can also be created using CREATE TABLE.
-  - The new table gets the same column definitions. All columns or specific columns can be selected.
-  - If you create a new table using an existing table, the new table will be filled with the existing values from the old table.
-
-
-CREATE TABLE new_table_name AS
-SELECT column1, column2,...
-FROM existing_table_name
-WHERE ....;
-
-CREATE TABLE tutorial.Student2 AS              CREATE TABLE tutorial.Student3 AS
-SELECT PersonID, LastName, Address             SELECT *
-FROM tutorial.persons;                         FROM tutorial.persons;
+1. DB: Create:(use DB_name -> switched to ..), show dbs, drop DB_name
+2. COLLECTIONS: Create(db.createCollection(name, options)), show collections, drop:(db.Colletion_name.drop())
+3. Document: db.collection_name.insertOne(insertMany)([]), remove({}, 1)({})({delletion_critteria}), updateOne(Many)({}, {$set: {}})
+4. Query document: db.Collection_Name.find().pretty()
+db.mycol.find({"likes":{$lt:50}}).pretty(), $lt,lte,gt,gte,ne,in,nin
+db.mycol.find({"name":{$in:["Raj", "Ram", "Raghu"]}}).pretty()
+db.mycol.find({$and:[{"by":"tutorials point"},{"title": "MongoDB Overview"}]}).pretty()
+db.mycol.find({$or:[{"by":"tutorials point"},{"title": "MongoDB Overview"}]}).pretty()
+db.mycol.find({"likes": {$gt:10}, $or: [{"by": "tutorials point"}, {"title": "MongoDB Overview"}]}).pretty()
+ db.empDetails.find({$nor:[{"First_Name": "Radhika"},		{"Last_Name": "Christopher"}]}.pretty()
+5. Projection: db.mycol.find({},{"title":1,_id:0})
+6. Limit Records: 
+db.mycol.find({},{"title":1,_id:0}).limit(2)
+db.mycol.find({},{"title":1,_id:0}).limit(1).skip(1)
+7. Sort Records:
+db.mycol.find({},{"title":1,_id:0}).sort({"title":-1}) (1: ascending, -1: descending)
 -->
 
-<!--
-SQL DROP TABLE Statement is used to drop an existing table in a database.  
-DROP TABLE table_name;
--->
 
 <!-- 
-SQL ALTER TABLE Statement is used to add, delete, or modify columns in an existing table, is also used to add and drop various constraints on an existing table.
+db.studentData.updateMany({}, { $set: { profilepic: {small: 50, med: 100, large: 200}}})
+db.studentData.find({"profilepic.med": 100})
+db.studentData.findOne({name: "Mark"}).lastlogin
+Relational: ràng buộc
+Non - relational: không ràng buộc
+High Scalability: khả năng mở rộng
+Vertical scalable: khả năng mở rộng chiều dọc
+Horizontal scalable: khả năng mở rộng chiều ngang
+Distributed data: phân tán dữ liệu
+deployment flexibility: triển khai linh hoạt
+high availability: tính sẵn sàng
+Eventual consistency: nhất quán cuối
+durability: lưu trữ tốt
 
-ALTER TABLE - ADD Column
-
-ALTER TABLE table_name                  ALTER TABLE tutorial.persons
-ADD column_name datatype;               ADD sex VARCHAR(20), ADD dob DATE;
-
-ALTER TABLE - DROP COLUMN
-
-ALTER TABLE table_name                  ALTER TABLE tutorial.persons
-DROP COLUMN column_name;                DROP COLUMN dob, DROP COLUMN PersonID;
-
-ALTER TABLE - ALTER/MODIFY COLUMN
-
-ALTER TABLE table_name                  ALTER TABLE tutorial.persons                           
-MODIFY COLUMN column_name datatype;     MODIFY COLUMN City varchar(100); (tu 255 -> 100);
+Relation:
+db.persons.insertOne({
+    name: ...,
+    ...
+})
+db.videos.insertOne({
+    topic:"Fun One",
+    length: 4,
+    creator: ObjectId("5c9b90361a0344a90724042b")
+})
+one to many, one to one, many to many relation
 -->
-
-<!--
-  - SQL CONSTRAINTS are used to specify rules for data in a table.Constraints are used to limit the type of data that can go into a table. This ensures the accuracy and reliability of the data in the table. If there is any violation between the constraint and the data action, the action is aborted.
-  - Constraints can be column level or table level. Column level constraints apply to a column, and table level constraints apply to the whole table.
-
-CREATE TABLE table_name (
-    column1 datatype constraint,
-    column2 datatype constraint,
-    column3 datatype constraint,
-    ....
-);
-
-The following constraints are commonly used in SQL:
-  - NOT NULL - Ensures that a column cannot have a NULL value
-  - UNIQUE - Ensures that all values in a column are different
-  - PRIMARY KEY - A combination of a NOT NULL and UNIQUE. Uniquely identifies each row in a table
-  - FOREIGN KEY - Uniquely identifies a row/record in another table
-  - CHECK - Ensures that all values in a column satisfies a specific condition
-  - DEFAULT - Sets a default value for a column when no value is specified
-  - INDEX - Used to create and retrieve data from the database very quickly
--->
-
-<!-- 
-SQL NOT NULL CONSTRAINT
-  - By default, a column can hold NULL values.
-  - The NOT NULL constraint enforces a column to NOT accept NULL values.
-  - This enforces a field to always contain a value, which means that you cannot insert a new record, or update a record without adding a value to this field.
-
-CREATE TABLE tutorial.Person(          ALTER TABLE tutorial.student2
-   ID int NOT NULL,                    MODIFY LastName varchar(255) NOT NULL, 
-   FirstName varchar(100) NOT NULL,    MODIFY Address varchar(255) NOT NULL;
-   astName varchar(100) NOT NULL,
-   Age int
-   );
--->
-
-<!-- 
-SQL UNIQUE CONSTRAINT
-  - The UNIQUE constraint ensures that all values in a column are different.
-  - Both the UNIQUE and PRIMARY KEY constraints provide a guarantee for uniqueness for a column or set of columns.
-  - A PRIMARY KEY constraint automatically has a UNIQUE constraint.
-  - However, you can have many UNIQUE constraints per table, but only one PRIMARY KEY constraint per table.
-
-CREATE TABLE tutorial.Person(            ALTER TABLE tutorial.student2
-   ID int NOT NULL,                      ADD CONSTRAINT UQ_Student UNIQUE(PersonID, LastName, Address);
-   FirstName varchar(255) NOT NULL,     (gop nhieu unique thi k co danh dau nhung co o muc indexes la                                        UQ_Student)
-   LastName varchar(255) NOT NULL,
-   Age int,                              ALTER TABLE tutorial.person
-   UNIQUE(ID) -> indexes                 DROP INDEX ID;   //delete
-   );
--->
-
-<!-- 
-SQL PRIMARY KEY Constraint
-  - The PRIMARY KEY constraint uniquely identifies each record in a table.
-  - Primary keys must contain UNIQUE values, and cannot contain NULL values.
-  - A table can have only ONE primary key; and in the table, this primary key can consist of single or multiple columns (fields).
-
-CREATE TABLE tutorial.person(
-    ID int NOT NULL,
-    FirstName varchar(255) NOT NULL,
-    LastName varchar(255) NOT NULL,
-    Age int,
-    PRIMARY KEY(ID) ->indexes  // CONSTRAINT pk_person PRIMARY KEY(ID) (k can dat ten vi 1 table co 1 PK)
-    );
-
-ALTER TABLE tutorial.student2                   ALTER TABLE tutorial.student2
-ADD PRIMARY KEY(PersonID, LastName);           DROP PRIMARY KEY 
-// 1 khoa chinh ( co the la 1 hoac nhieu cot)
--->
-
-<!-- 
-SQL FOREIGN KEY Constraint
--->
-
-<!-- 
-SQL AUTO INCREMENT Field
--->
-
-<!--
-SQL INSERT INTO Statement  is used to insert new records in a table.
-
-INSERT INTO table_name (column1, column2, column3, ...)      INSERT INTO tutorial.person
-VALUES (value1, value2, value3, ...);                        VALUES (123456, 'Nguyen Huu', 'Hung', 19);
-INSERT INTO table_name
-VALUES (value1, value2, value3, ...);
--->
-
-<!-- 
-SQL DELETE Statement is used to delete existing records in a table.
-DELETE FROM table_name WHERE condition;  
-DELETE FROM table_name;              DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
--->
-
-<!-- 
-SQL SELECT Statement is used to select data from a database.The data returned is stored in a result table, called the result-set.
-
-SELECT column1, column2, ...     SELECT * FROM tutorial.person;
-FROM table_name;                 SELECT FirstName, LastName FROM tutorial.person;
--->
-
-<!--
-The SQL SELECT DISTINCT Statement is used to return only distinct (different) values.Inside a table, a column often contains many duplicate values; and sometimes you only want to list the different (distinct) values.
-
-SELECT DISTINCT column1, column2, ...
-FROM table_name;
-SELECT DISTINCT Country FROM Customers;
-SELECT COUNT(DISTINCT Country) FROM Customers;
--->
-
-<!-- 
-SQL WHERE Clause (if) is used to filter records.The WHERE clause is used to extract only those records that fulfill a specified condition.The WHERE clause is not only used in SELECT statement, it is also used in UPDATE, DELETE statement, etc.! Operators in The WHERE Clause: =, <>, LIKE,BETWEEN, IN,...
-
-
-SELECT column1, column2, ...              SELECT * FROM Customers
-FROM table_name                           WHERE Country='Mexico';
-WHERE condition;
--->
-
-<!-- 
-The SQL UPDATE Statement is used to modify the existing records in a table.
-
-UPDATE table_name                              UPDATE Customers
-SET column1 = value1, column2 = value2, ...    SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
-WHERE condition;                               WHERE CustomerID = 1;
--->
-
-<!-- 
-The SQL AND, OR, NOT OPERATORS
-  - The WHERE clause can be combined with AND, OR, and NOT operators.
-  - The NOT operator displays a record if the condition(s) is NOT TRUE.
-
-SELECT column1, column2, ...
-FROM table_name
-WHERE condition1 AND condition2 AND condition3 ...;
-                                                    SELECT * FROM Customers
-SELECT column1, column2, ...                        WHERE Country='Germany' OR Country='Spain';
-FROM table_name                                                         
-WHERE condition1 OR condition2 OR condition3 ...;   SELECT * FROM Customers
-                                         WHERE Country='Germany' AND (City='Berlin' OR City='München');
-SELECT column1, column2, ...
-FROM table_name
-WHERE NOT condition;
--->
-
-<!-- 
-SQL ORDER BY KEYWORD is used to sort the result-set in ascending or descending order.The ORDER BY keyword sorts the records in ascending order by default. To sort the records in descending order, use the DESC keyword.
-
-SELECT column1, column2, ...                    SELECT * FROM Customers
-FROM table_name                                 ORDER BY Country DESC;
-ORDER BY column1, column2, ... ASC|DESC;        SELECT * FROM Customers
-                                                ORDER BY Country ASC, CustomerName DESC;
--->
-
-<!-- 
-The SQL SELECT TOP CLAUSE is used to specify the number of records to return.The SELECT TOP clause is useful on large tables with thousands of records. Returning a large number of records can impact performance.
-
-SELECT column_name(s)
-FROM table_name
-WHERE condition
-LIMIT number;
--->
-
-<!-- 
-SQL NULL Values
-  - A field with a NULL value is a field with no value.
-  - If a field in a table is optional, it is possible to insert a new record or update a record without adding a value to this field. Then, the field will be saved with a NULL value.It is not possible to test for NULL values with comparison operators, such as =, <, or <>.We will have to use the IS NULL and IS NOT NULL operators instead.
-  - A NULL value is different from a zero value or a field that contains spaces. A field with a NULL value is one that has been left blank during record creation!
-
-SELECT column_names                SELECT CustomerName, ContactName, Address
-FROM table_name                    FROM Customers
-WHERE column_name IS NULL;         WHERE Address IS NULL;
-
-SELECT column_names
-FROM table_name
-WHERE column_name IS NOT NULL;
--->
-
-<!--
-SQL LIKE OPERATOR is used in a WHERE clause to search for a specified pattern in a column.
-  - There are two wildcards often used in conjunction with the LIKE operator:
-    + % - The percent sign represents zero, one, or multiple characters
-    + _ - The underscore represents a single character
-
-SELECT column1, column2, ...
-FROM table_name
-WHERE columnN LIKE pattern;
-
-WHERE CustomerName LIKE 'a%'	Finds any values that start with "a"
-WHERE CustomerName LIKE '%a'	Finds any values that end with "a"
-WHERE CustomerName LIKE '%or%'	Finds any values that have "or" in any position
-WHERE CustomerName LIKE '_r%'	Finds any values that have "r" in the second position
-WHERE CustomerName LIKE 'a__%'	Finds any values that start with "a" and are at least 3 characters in length
-WHERE ContactName LIKE 'a%o'	Finds any values that start with "a" and ends with "o"
--->
-
-<!-- 
-SQL MIN(), MAX() FUNCTIONS
-  - The MIN() function returns the smallest value of the selected column.
-  - The MAX() function returns the largest value of the selected column.
-
-SELECT MIN(MAX)(column_name) SELECT MIN(Price) AS SmallestPrice, MAX(Price) AS BiggestPrice  / dat ten
-FROM table_name              FROM Products;
-WHERE condition;
--->
-
-<!-- 
-SQL COUNT(), AVG(), SUM() FUNCTIONS
-  - The COUNT() function returns the number of rows that matches a specified criteria.
-  - The AVG() function returns the average value of a numeric column.
-  - The SUM() function returns the total sum of a numeric column.
-
-SELECT COUNT(AVG, SUM)(column_name)   SELECT COUNT(FirstName) FROM person WHERE FirstName LIKE '%h%'
-FROM table_name                       SELECT COUNT(*) FROM;  
-WHERE condition;                      SELECT AVG(Age) FROM Person WHERE Age > 40;
--->
-
-<!-- 
-DB Diagram
--->
-
-<!-- 
-SQL WILDCARDS
-  - A wildcard character is used to substitute one or more characters in a string.
-  - Wildcard characters are used with the SQL LIKE operator. The LIKE operator is used in a WHERE clause to search for a specified pattern in a column. REGULAR EXPRESSION(RegEx)
--->
-
-<!-- 
-SQL IN OPERATOR allows you to specify multiple values in a WHERE clause.The IN operator is a shorthand for multiple OR conditions.
- 
-SELECT column_name(s)                      SELECT * FROM Customers
-FROM table_name                            WHERE Country (NOT) IN ('Germany', 'France', 'UK');
-WHERE column_name IN (value1, value2, ...);
-
-
-SELECT column_name(s)
-FROM table_name
-WHERE column_name IN (SELECT STATEMENT);
-
-The following SQL statement selects all customers that are from the same countries as the suppliers:
-SELECT * FROM Customers
-WHERE Country IN (SELECT Country FROM Suppliers);
--->
-
 
